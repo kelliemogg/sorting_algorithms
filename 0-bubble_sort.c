@@ -10,11 +10,13 @@
 
 void bubble_sort(int *array, size_t size)
 {
+	size_t len;
 	unsigned int i;
 	int tmp;
 	int check = 1;;
 
-	while (check)
+	len = size;
+	while (check && size > 1)
 	{
 		check = 0;
 		for (i = 1; i < size; i++)
@@ -28,5 +30,6 @@ void bubble_sort(int *array, size_t size)
 				check = 1;
 			}
 		}
+		len = len - 1;
 	}
 }
