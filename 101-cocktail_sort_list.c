@@ -25,9 +25,12 @@ void cocktail_sort_list(listint_t **list)
 	{
 	/*Sort to the right, change l_tail*/
 		l_tail = sort_right(r_head, l_tail);
-
+		if (l_tail == NULL)
+			return;
 	/*Sort to the left, change r_head*/
 		r_head = sort_left(l_tail, r_head);
+		if (r_head == NULL)
+			return;
 	}
 
 	/*Swap last 2 if nessicary*/
@@ -68,12 +71,13 @@ listint_t *get_tail(listint_t **list)
  * @list: Full list to print.
  * @r_head: Head node of list section.
  * @l_tail: Tail node of list section.
- * Return: Pointer to node before section tail. NULL on fail.
+ * Return: Pointer to node before section tail. NULL on fail or no swap.
  */
 
 listint_t *sort_right(listint_t **list, listint_t *r_head, listint_t *l_tail)
 {
 	listint_t *current = r_head, *temp;
+	int swap = 0;
 
 	if (list == NULL || *list == NULL || r_haed == NULL || l_tail == NULL)
 		return (NULL);
@@ -88,12 +92,15 @@ listint_t *sort_right(listint_t **list, listint_t *r_head, listint_t *l_tail)
 			temp->next = current;
 			current->prev = temp;
 			print_list(*list);
+			swap = 1;
 			if (temp == l_tail)
 				return (temp);
 		}
 		else
 			current = current->next;
 	}
+	if (swap == 0)
+		return (NULL);
 	return (l_tail->prev);
 
 }
@@ -105,11 +112,13 @@ listint_t *sort_right(listint_t **list, listint_t *r_head, listint_t *l_tail)
  * @list: Full list to print.
  * @r_head: Head node of list section.
  * @l_tail: Tail node of list section.
- * Return: Pointer to node before section tail. NULL on fail.
+ * Return: Pointer to node before section tail. NULL on fail or no swap.
  */
 
 listint_t *sort_left(listint_t **list, listint_t *l_tail, listint_t *r_head)
 {
+	listint_t *current = l_tail, *temp;
+	int swap = 0;
 
 	if (list == NULL || *list == NULL || l_tail == NULL || r_head == NULL)
 		return (NULL);
@@ -124,12 +133,15 @@ listint_t *sort_left(listint_t **list, listint_t *l_tail, listint_t *r_head)
 			temp->prev = current;
 			current->next = temp;
 			print_list(*list);
+			swap = 1;
 			if (temp == r_head)
 				return (temp);
 		}
 		else
 			current = current->next;
 	}
+	if (swap == 0)
+		return (NULL);
 	return (r_head->next);
 
 }
