@@ -1,51 +1,6 @@
 #include "sort.h"
 
 /**
- * cocktail_sort_list -  Sorts a doubly linked list in asscending order using
- * the Cocktail Shaker sort algorithm. Prints for every swap.
- * @list: Double pointer to the head node the doubly linked list
- * Return: Void
- */
-
-void cocktail_sort_list(listint_t **list)
-{
-	listint_t *r_head, *l_tail;
-
-	/*Check for NULL's*/
-	if (list == NULL || *list == NULL)
-		return;
-
-	/*Set r_head & l_tail*/
-	r_head = *list;
-	l_tail = get_tail(list);
-
-	/*Check if r_head & l_tail have met*/
-	while (r_head != NULL && r_head->next != l_tail &&
-	      l_tail->prev != r_head && r_head != l_tail)
-	{
-	/*Sort to the right, change l_tail*/
-		l_tail = sort_right(r_head, l_tail);
-		if (l_tail == NULL)
-			return;
-	/*Sort to the left, change r_head*/
-		r_head = sort_left(l_tail, r_head);
-		if (r_head == NULL)
-			return;
-	}
-
-	/*Swap last 2 if nessicary*/
-	if (r_head->next == l_tail && r_head->n > l_tail->n)
-	{
-		temp = current->next;
-		temp->prev = current->prev;
-		current->next = current->next->next;
-		temp->next = current;
-		current->prev = temp;
-		print_list(*list);
-	}
-}
-
-/**
  * get_tail - Finds and returns the tail node of a doubly liinked list
  * @list: Double pointer to doubly linked list
  * Return: Pointer to tail node, NULL on fail.
@@ -53,15 +8,58 @@ void cocktail_sort_list(listint_t **list)
 
 listint_t *get_tail(listint_t **list)
 {
-	listint_t *curent = *list;
+	listint_t *current = *list;
 
 	if (list == NULL || *list == NULL)
 		return (NULL);
 
-	while (curent->next != NULL)
+	while (current->next != NULL)
 		current = current->next;
 
 	return (current);
+}
+
+/**
+ * swap - Swaps the position of 2 nodes in a doubly linked list, then prints
+ * the list. Must recieve the eariler "left" node and that
+ * "right" is left->next.
+ * @list: Double pointer to the head node of the list
+ * @left: Node that comes first in the doubly linked list
+ * Return: Void
+ */
+
+void swap(listint_t **list, listint_t *left)
+{
+	listint_t *p_left = NULL, *n_right = NULL, *right = left->next;
+
+	if (list == NULL || *list == NULL || left == NULL)
+		exit(0);
+
+	/*if nodes existed on either side, change the nodes they point to*/
+	if (left->prev != NULL)
+	{
+		p_left = left->prev;
+		p_left->next = right;
+	}
+
+	if (right->next != NULL)
+	{
+		n_right = right->next;
+		n_right->prev = left;
+	}
+
+	/*swap 2 inner nodes*/
+	right->prev = left->prev;
+	left->prev = right;
+	left->next = right->next;
+	right->next = left;
+
+	/*Make sure to move the head if it was swaped*/
+	if (*list == left)
+		*list = right;
+
+	print_list(*list);
+
 }
 
 /**
@@ -69,39 +67,34 @@ listint_t *get_tail(listint_t **list)
  * nodes to the "right" from head to tail, printing the whole list each time
  * nodes a swaped. Then returns the node before the tail.
  * @list: Full list to print.
- * @r_head: Head node of list section.
- * @l_tail: Tail node of list section.
+ * @l_head: Head node of list section.
+ * @r_tail: Tail node of list section.
  * Return: Pointer to node before section tail. NULL on fail or no swap.
  */
 
-listint_t *sort_right(listint_t **list, listint_t *r_head, listint_t *l_tail)
+listint_t *sort_right(listint_t **list, listint_t *l_head, listint_t *r_tail)
 {
-	listint_t *current = r_head, *temp;
-	int swap = 0;
+	listint_t *current = l_head;
+	int swaped = 0;
 
-	if (list == NULL || *list == NULL || r_haed == NULL || l_tail == NULL)
+	if (list == NULL || *list == NULL || l_head == NULL || r_tail == NULL)
 		return (NULL);
 
-	while (current != l_tail)
+	while (current != r_tail)
 	{
 		if (current->n > current->next->n)
 		{
-			temp = current->next;
-			temp->prev = current->prev;
-			current->next = current->next->next;
-			temp->next = current;
-			current->prev = temp;
-			print_list(*list);
-			swap = 1;
-			if (temp == l_tail)
-				return (temp);
+			swaped = 1;
+			swap(list, current);
+			if (current->prev == r_tail)
+				return (current);
 		}
 		else
 			current = current->next;
 	}
-	if (swap == 0)
+	if (swaped == 0)
 		return (NULL);
-	return (l_tail->prev);
+	return (r_tail->prev);
 
 }
 
@@ -110,38 +103,79 @@ listint_t *sort_right(listint_t **list, listint_t *r_head, listint_t *l_tail)
  * nodes to the "left" from tail to head, printing the whole list each time
  * nodes a swaped. Then returns the node before the head.
  * @list: Full list to print.
- * @r_head: Head node of list section.
- * @l_tail: Tail node of list section.
+ * @l_head: Head node of list section.
+ * @r_tail: Tail node of list section.
  * Return: Pointer to node before section tail. NULL on fail or no swap.
  */
 
-listint_t *sort_left(listint_t **list, listint_t *l_tail, listint_t *r_head)
+listint_t *sort_left(listint_t **list, listint_t *r_tail, listint_t *l_head)
 {
-	listint_t *current = l_tail, *temp;
-	int swap = 0;
+	listint_t *current = r_tail;
+	int swaped = 0;
 
-	if (list == NULL || *list == NULL || l_tail == NULL || r_head == NULL)
+	if (list == NULL || *list == NULL || r_tail == NULL || l_head == NULL)
 		return (NULL);
 
-	while (current != l_tail)
+	while (current != l_head)
 	{
 		if (current->n < current->prev->n)
 		{
-			temp = current->prev;
-			temp->next = current->next;
-			current->prev = current->prev->prev;
-			temp->prev = current;
-			current->next = temp;
-			print_list(*list);
-			swap = 1;
-			if (temp == r_head)
-				return (temp);
+			swaped = 1;
+			swap(list, current->prev);
+			if (current->next == l_head)
+				return (l_head);
 		}
 		else
-			current = current->next;
+			current = current->prev;
 	}
-	if (swap == 0)
+	if (swaped == 0)
 		return (NULL);
-	return (r_head->next);
+	return (l_head->next);
 
+}
+
+/**
+ * cocktail_sort_list -  Sorts a doubly linked list in asscending order using
+ * the Cocktail Shaker sort algorithm. Prints for every swap.
+ * @list: Double pointer to the head node the doubly linked list
+ * Return: Void
+ */
+
+void cocktail_sort_list(listint_t **list)
+{
+	listint_t *l_head, *r_tail, *current, *temp;
+
+	/*Check for NULL's*/
+	if (list == NULL || *list == NULL)
+		return;
+
+	/*Set l_head & r_tail*/
+	l_head = *list;
+	r_tail = get_tail(list);
+
+	/*Check if l_head & r_tail have met*/
+	while (l_head != NULL && l_head->next != r_tail &&
+	      r_tail->prev != l_head && l_head != r_tail)
+	{
+	/*Sort to the right, change r_tail*/
+		r_tail = sort_right(list, l_head, r_tail);
+		if (r_tail == NULL)
+			return;
+	/*Sort to the left, change l_head*/
+		l_head = sort_left(list, r_tail, l_head);
+		if (l_head == NULL)
+			return;
+	}
+
+	/*Swap last 2 if nessicary*/
+	if (l_head->next == r_tail && l_head->n > r_tail->n)
+	{
+		current = l_head;
+		temp = current->next;
+		temp->prev = current->prev;
+		current->next = current->next->next;
+		temp->next = current;
+		current->prev = temp;
+		print_list(*list);
+	}
 }
