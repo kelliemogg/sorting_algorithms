@@ -11,36 +11,44 @@
 void insertion_sort_list(listint_t **list)
 {
 	listint_t *tmp;
-	listint_t *s_head;
+	listint_t *mover;
 	int check = 1;
 
 	if (list == NULL || *list == NULL)
 		return;
 
-	s_head = *list;
-        while (check && s_head != NULL && s_head->next != NULL)
+	mover = *list;
+        while (check && mover != NULL && mover->next != NULL)
 	{
 		check = 0;
-		if (s_head->next->n > s_head->n)
+		if (mover->next->n > mover->n)
 		{
-			s_head = s_head->next;
+			mover = mover->next;
 		}
-		else if (s_head->n > s_head->next->n)
+		else if (mover->n > mover->next->n)
 		{
-			tmp = s_head->next;
-			swap_nodes(tmp);
+			tmp = mover->next;
+			swap_nodes(list, tmp);
 			print_list(*list);
-			while (tmp->n < tmp->prev->n && tmp->prev != NULL)
+			while (tmp->prev != NULL && tmp->n < tmp->prev->n)
 			{
-				swap_nodes(tmp);
-				print_list(*list);
+				if (tmp->prev->prev != NULL)
+				{
+					swap_nodes(list, tmp);
+					print_list(*list);
+				}
+				else if (tmp->prev->prev == NULL)
+				{
+					swap_nodes(list, tmp);
+					print_list(*list);
+				}
 			}
 		}
 		check = 1;
 	}
 }
 
-void swap_nodes(listint_t *tmp)
+listint_t *swap_nodes(listint_t **list, listint_t *tmp)
 {
 	listint_t *l_head, *s_head_p, *tmp_n;
 
@@ -76,14 +84,13 @@ void swap_nodes(listint_t *tmp)
 		/* define outer right node */
 		tmp_n = tmp->next;
                 /* swap the inner nodes and reconnect right node */
-		tmp_n->prev = l_head;
-		l_head->prev = tmp;
 		tmp->prev = NULL;
 		tmp->next = l_head;
+		l_head->prev = tmp;
 		l_head->next = tmp_n;
-		printf("[%d] is l_head\n", l_head->n);
-                printf("[%d] is tmp_n\n", tmp_n->n);
-                printf("[%d] is tmp\n", tmp->n);
+		tmp_n->prev = l_head;
 		/* losing tmp node (13) here*/
+		*list = tmp;
 	}
+	return (tmp);
 }
