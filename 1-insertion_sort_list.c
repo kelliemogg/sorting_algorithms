@@ -19,8 +19,13 @@ void insertion_sort_list(listint_t **list)
 	while (check && mover != NULL && mover->next != NULL)
 	{
 		check = 0;
-		if (mover->next == NULL)
+		if (mover->next->next == NULL && mover->prev == NULL && mover->n > mover->next->n)
+		{
+			tmp = mover->next;
+			swap_nodes(list, tmp);
+			print_list(*list);
 			return;
+		}
 		if (mover->next->n > mover->n)
 			mover = mover->next;
 		else if (mover->n > mover->next->n)
@@ -45,11 +50,18 @@ void insertion_sort_list(listint_t **list)
 		check = 1;
 	}
 }
+/**
+ * swap_nodes - swaps nodes
+ * description: swaps smaller node to the left
+ * @list: list
+ * @tmp: node to be swapped
+ * Return: new list
+ */
 
 listint_t *swap_nodes(listint_t **list, listint_t *tmp)
 {
 	listint_t *l_head, *s_head_p, *tmp_n;
-	/* define the inner nodes */
+
 	l_head = tmp->prev;
 	if (l_head->prev != NULL && tmp->next != NULL)
 	{
@@ -57,10 +69,8 @@ listint_t *swap_nodes(listint_t **list, listint_t *tmp)
 		s_head_p = l_head->prev;
 		tmp_n = tmp->next;
 		/* swap the inner nodes and reconnect */
-		tmp->next = l_head;
 		tmp->prev = s_head_p;
 		l_head->next = tmp_n;
-		l_head->prev = tmp;
 		tmp_n->prev = l_head;
 		s_head_p->next = tmp;
 	}
@@ -69,23 +79,29 @@ listint_t *swap_nodes(listint_t **list, listint_t *tmp)
 		/* define outer left node */
 		s_head_p = l_head->prev;
 		/* swap the inner nodes and reconnect left node */
-		tmp->next = l_head;
 		tmp->prev = s_head_p;
 		l_head->next = NULL;
-		l_head->prev = tmp;
 		s_head_p->next = tmp;
 	}
-	else if (l_head->prev == NULL)
+	else if (l_head->prev == NULL && tmp->next != NULL)
 	{
 		/* define outer right node */
 		tmp_n = tmp->next;
 		/* swap the inner nodes and reconnect right node */
 		tmp->prev = NULL;
-		tmp->next = l_head;
-		l_head->prev = tmp;
 		l_head->next = tmp_n;
 		tmp_n->prev = l_head;
 		*list = tmp;
 	}
+	else if (l_head->prev == NULL && tmp->next == NULL)
+	{
+		tmp->next = l_head;
+		tmp->prev = NULL;
+		l_head->prev = tmp;
+		l_head->next = NULL;
+		*list = tmp;
+	}
+	tmp->next = l_head;
+	l_head->prev = tmp;
 	return (tmp);
 }
