@@ -10,27 +10,27 @@
 
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *tmp, *mover;
+	listint_t *tmp, *mvr;
 	int check = 1;
 
 	if (list == NULL || *list == NULL)
 		return;
-	mover = *list;
-	while (check && mover != NULL && mover->next != NULL)
+	mvr = *list;
+	while (check && mvr != NULL && mvr->next != NULL)
 	{
 		check = 0;
-		if (mover->next->next == NULL && mover->prev == NULL && mover->n > mover->next->n)
+		if (mvr->next->next == NULL && mvr->prev == NULL && mvr->n > mvr->next->n)
 		{
-			tmp = mover->next;
+			tmp = mvr->next;
 			swap_nodes(list, tmp);
 			print_list(*list);
 			return;
 		}
-		if (mover->next->n > mover->n)
-			mover = mover->next;
-		else if (mover->n > mover->next->n)
+		if (mvr->next->n >= mvr->n)
+			mvr = mvr->next;
+		else if (mvr->n > mvr->next->n)
 		{
-			tmp = mover->next;
+			tmp = mvr->next;
 			swap_nodes(list, tmp);
 			print_list(*list);
 			while (tmp->prev != NULL && tmp->n < tmp->prev->n)
@@ -65,7 +65,6 @@ listint_t *swap_nodes(listint_t **list, listint_t *tmp)
 	l_head = tmp->prev;
 	if (l_head->prev != NULL && tmp->next != NULL)
 	{
-		/* define outter nodes */
 		s_head_p = l_head->prev;
 		tmp_n = tmp->next;
 		/* swap the inner nodes and reconnect */
@@ -76,7 +75,6 @@ listint_t *swap_nodes(listint_t **list, listint_t *tmp)
 	}
 	else if (l_head->prev != NULL && tmp->next == NULL)
 	{
-		/* define outer left node */
 		s_head_p = l_head->prev;
 		/* swap the inner nodes and reconnect left node */
 		tmp->prev = s_head_p;
@@ -85,7 +83,6 @@ listint_t *swap_nodes(listint_t **list, listint_t *tmp)
 	}
 	else if (l_head->prev == NULL && tmp->next != NULL)
 	{
-		/* define outer right node */
 		tmp_n = tmp->next;
 		/* swap the inner nodes and reconnect right node */
 		tmp->prev = NULL;
@@ -95,9 +92,7 @@ listint_t *swap_nodes(listint_t **list, listint_t *tmp)
 	}
 	else if (l_head->prev == NULL && tmp->next == NULL)
 	{
-		tmp->next = l_head;
 		tmp->prev = NULL;
-		l_head->prev = tmp;
 		l_head->next = NULL;
 		*list = tmp;
 	}
