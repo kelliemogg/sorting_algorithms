@@ -18,63 +18,72 @@ void insertion_sort_list(listint_t **list)
 		return;
 
 	s_head = *list;
-	printf("[%d] - first s_head\n", s_head->n);
-	while (check && s_head != NULL && s_head->next != NULL)
+        while (check && s_head != NULL && s_head->next != NULL)
 	{
 		check = 0;
 		if (s_head->next->n > s_head->n)
 		{
 			s_head = s_head->next;
-			printf("[%d] - slide right s_head\n", s_head->n);
 		}
 		else if (s_head->n > s_head->next->n)
 		{
 			tmp = s_head->next;
-			printf("[%d] - tmp for swap\n", tmp->n);
 			swap_nodes(tmp);
 			print_list(*list);
-			/*else if (tmp->n < s_head_p->n && s_head_p->prev == NULL)
-				make function for switching last two nodes*/
+			while (tmp->n < tmp->prev->n && tmp->prev != NULL)
+			{
+				swap_nodes(tmp);
+				print_list(*list);
+			}
 		}
-		if (s_head->next != NULL)
-			check = 1;
-		else
-			return;
+		check = 1;
 	}
 }
 
 void swap_nodes(listint_t *tmp)
 {
-	listint_t *s_head, *s_head_p, *tmp_n;
+	listint_t *l_head, *s_head_p, *tmp_n;
 
-	/* define the inner and outer nodes */
-	s_head = tmp->prev;
-	printf("[%d] - s_head in swap nodes\n", s_head->n);
+	/* define the inner nodes */
+	l_head = tmp->prev;
 
-	while (s_head->prev != NULL && tmp->next != NULL)
+	if (l_head->prev != NULL && tmp->next != NULL)
 	{
-		s_head_p = s_head->prev;
-		if (tmp->next != NULL)
-			tmp_n = tmp->next;
-
-		tmp->next = s_head;
+		/* define outter nodes */
+		s_head_p = l_head->prev;
+		tmp_n = tmp->next;
+		/* swap the inner nodes and reconnect */
+		tmp->next = l_head;
 		tmp->prev = s_head_p;
-		s_head->next = tmp_n;
-		s_head->prev = tmp;
-		tmp_n->prev = s_head;
+		l_head->next = tmp_n;
+		l_head->prev = tmp;
+		tmp_n->prev = l_head;
 		s_head_p->next = tmp;
-		printf("[%d] is tmp after swap\n", tmp->n);
-		printf("[%d] is s_head after swap\n", s_head->n);
-		printf("[%d] is s_head_p after swap\n", s_head_p->n);
-		printf("[%d] is tmp_n after swap\n", tmp_n->n);
-
-/*		if (tmp->n < s_head_p->n && s_head_p->prev != NULL)
-		{
-			tmp->prev = s_head;
-			s_head->next = tmp;
-			s_head->prev = s_head_p;
-			tmp->next = tmp_n;
-			swap_nodes(tmp);
-		}
-*/	}
+	}
+	else if (l_head->prev != NULL && tmp->next == NULL)
+	{
+		/* define outer left node */
+		s_head_p = l_head->prev;
+		/* swap the inner nodes and reconnect left node */
+		tmp->next = l_head;
+		tmp->prev = s_head_p;
+		l_head->next = NULL;
+		l_head->prev = tmp;
+		s_head_p->next = tmp;
+	}
+	else if (l_head->prev == NULL)
+	{
+		/* define outer right node */
+		tmp_n = tmp->next;
+                /* swap the inner nodes and reconnect right node */
+		tmp_n->prev = l_head;
+		l_head->prev = tmp;
+		tmp->prev = NULL;
+		tmp->next = l_head;
+		l_head->next = tmp_n;
+		printf("[%d] is l_head\n", l_head->n);
+                printf("[%d] is tmp_n\n", tmp_n->n);
+                printf("[%d] is tmp\n", tmp->n);
+		/* losing tmp node (13) here*/
+	}
 }
