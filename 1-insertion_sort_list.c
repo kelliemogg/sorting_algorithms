@@ -10,21 +10,19 @@
 
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *tmp;
-	listint_t *mover;
+	listint_t *tmp, *mover;
 	int check = 1;
 
 	if (list == NULL || *list == NULL)
 		return;
-
 	mover = *list;
-        while (check && mover != NULL && mover->next != NULL)
+	while (check && mover != NULL && mover->next != NULL)
 	{
 		check = 0;
+		if (mover->next == NULL)
+			return;
 		if (mover->next->n > mover->n)
-		{
 			mover = mover->next;
-		}
 		else if (mover->n > mover->next->n)
 		{
 			tmp = mover->next;
@@ -51,10 +49,8 @@ void insertion_sort_list(listint_t **list)
 listint_t *swap_nodes(listint_t **list, listint_t *tmp)
 {
 	listint_t *l_head, *s_head_p, *tmp_n;
-
 	/* define the inner nodes */
 	l_head = tmp->prev;
-
 	if (l_head->prev != NULL && tmp->next != NULL)
 	{
 		/* define outter nodes */
@@ -83,13 +79,12 @@ listint_t *swap_nodes(listint_t **list, listint_t *tmp)
 	{
 		/* define outer right node */
 		tmp_n = tmp->next;
-                /* swap the inner nodes and reconnect right node */
+		/* swap the inner nodes and reconnect right node */
 		tmp->prev = NULL;
 		tmp->next = l_head;
 		l_head->prev = tmp;
 		l_head->next = tmp_n;
 		tmp_n->prev = l_head;
-		/* losing tmp node (13) here*/
 		*list = tmp;
 	}
 	return (tmp);
