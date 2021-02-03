@@ -31,9 +31,7 @@ void quick_sort_hoare_recurse(int *origin, size_t o_size,
 {
 	size_t piv = size - 1, move = 0, temp;
 
-	if (size < 2 || origin == NULL || array == NULL)
-		return;
-	else
+	if (size >= 2 || origin != NULL || array != NULL)
 	{
 		while (move != piv)
 		{
