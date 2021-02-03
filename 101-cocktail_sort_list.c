@@ -59,7 +59,6 @@ void swap(listint_t **list, listint_t *left)
 		*list = right;
 
 	print_list(*list);
-
 }
 
 /**
@@ -72,18 +71,20 @@ void swap(listint_t **list, listint_t *left)
  * Return: Pointer to node before section tail. NULL on fail or no swap.
  */
 
-listint_t *sort_right(listint_t **list, listint_t *l_head, listint_t *r_tail)
+listint_t *sort_right(listint_t **list, listint_t **l_head, listint_t *r_tail)
 {
-	listint_t *current = l_head;
+	listint_t *current = *l_head;
 	int swaped = 0;
 
-	if (list == NULL || *list == NULL || l_head == NULL || r_tail == NULL)
+	if (list == NULL || *list == NULL || *l_head == NULL || r_tail == NULL)
 		return (NULL);
 
 	while (current != r_tail)
 	{
 		if (current->n > current->next->n)
 		{
+			if (current == *l_head)
+				*l_head = current->next;
 			swaped = 1;
 			swap(list, current);
 			if (current->prev == r_tail)
@@ -155,13 +156,13 @@ void cocktail_sort_list(listint_t **list)
 
 	/*Check if l_head & r_tail have met*/
 	while (l_head != NULL && l_head->next != r_tail &&
-	      r_tail->prev != l_head && l_head != r_tail)
+	       r_tail->prev != l_head && l_head != r_tail)
 	{
-	/*Sort to the right, change r_tail*/
-		r_tail = sort_right(list, l_head, r_tail);
+		/*Sort to the right, change r_tail*/
+		r_tail = sort_right(list, &l_head, r_tail);
 		if (r_tail == NULL)
 			return;
-	/*Sort to the left, change l_head*/
+		/*Sort to the left, change l_head*/
 		l_head = sort_left(list, r_tail, l_head);
 		if (l_head == NULL)
 			return;
@@ -176,6 +177,9 @@ void cocktail_sort_list(listint_t **list)
 		current->next = current->next->next;
 		temp->next = current;
 		current->prev = temp;
+		/*Make sure to move the head if it was swaped*/
+		if (*list == current)
+			*list = temp;
 		print_list(*list);
 	}
 }
