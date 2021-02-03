@@ -16,7 +16,6 @@ void swap_elements(int *arry, int id_1, int id_2)
 	arry[id_1] = temp;
 }
 
-
 /**
  * quick_sort_hoare_recurse - Sorts an array using the quicksort Hoare
  * partition scheme by handeling the recursive passing.
@@ -30,9 +29,9 @@ void swap_elements(int *arry, int id_1, int id_2)
 void quick_sort_hoare_recurse(int *origin, size_t o_size,
 			      int *array, size_t size)
 {
-	size_t piv = size -1, move = 0, temp;
+	size_t piv = size - 1, move = 0, temp;
 
-	if (size < 2)
+	if (size < 2 || origin == NULL || array == NULL)
 		return;
 	else
 	{
@@ -78,5 +77,7 @@ void quick_sort_hoare_recurse(int *origin, size_t o_size,
 
 void quick_sort_hoare(int *array, size_t size)
 {
+	if (array == NULL)
+		return;
 	quick_sort_hoare_recurse(array, size, array, size);
 }
