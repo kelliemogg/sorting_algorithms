@@ -20,9 +20,9 @@ void quick_sort2(int *o_array, size_t o_size, int *array, size_t size)
 	if (size > 2)
 	{
 		p = array[size - 1];
-		for (j = 0; j <= (int)size - 1; j++)
+		for (j = 0; j < (int)size - 1; j++)
 		{
-			if (array[j] >= p)
+			if (array[j] > p)
 			{
 				for (i = j; array[i] > p; i++)
 					continue;
