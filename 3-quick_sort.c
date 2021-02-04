@@ -1,7 +1,7 @@
 #include "sort.h"
 
 /**
- * quick_sort - quick sort algorithm
+ * quick_sort2 - quick sort algorithms
  * description: sorts an array of ints in ascending order using the Quick
  * sort algorithm - includes the Lomuto partition scheme
  * @o_array: array of unsorted ints to print as sorted
@@ -26,7 +26,7 @@ void quick_sort2(int *o_array, size_t o_size, int *array, size_t size)
 				{
 					continue;
 				}
-				if (j != (int)size-1)
+				if (j != (int)size - 1)
 				{
 					swap = array[i];
 					array[i] = array[j];
