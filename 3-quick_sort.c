@@ -15,6 +15,8 @@ void quick_sort2(int *o_array, size_t o_size, int *array, size_t size)
 {
 	int j, i, swap, p;
 
+	if (array == NULL)
+		return;
 	if (size > 2)
 	{
 		p = array[size - 1];
@@ -23,9 +25,7 @@ void quick_sort2(int *o_array, size_t o_size, int *array, size_t size)
 			if (array[j] >= p)
 			{
 				for (i = j; array[i] > p; i++)
-				{
 					continue;
-				}
 				if (j != (int)size - 1)
 				{
 					swap = array[i];
@@ -42,6 +42,16 @@ void quick_sort2(int *o_array, size_t o_size, int *array, size_t size)
 		if (j < (int)size - 1)
 			quick_sort2(o_array, o_size, (array + j + 1),
 				    (size - (j + 1)));
+	}
+	else
+	{
+		if (array[size - 1] < array[0])
+		{
+			swap = array[0];
+			array[0] = array[size - 1];
+			array[size - 1] = swap;
+			print_array(o_array, o_size);
+		}
 	}
 }
 
